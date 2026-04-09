@@ -17,34 +17,34 @@ const searchQuery = "";
 
 // Fetch API
 
-async function fetchCharacters() {
-  let maxPages = false;
-  while (!maxPages) {
-    try {
-      const response = await fetch(
-        `https://rickandmortyapi.com/api/character?page=${page}`,
-      );
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch Data! Status Code: ${response.status}`,
-        );
-      }
-      const data = await response.json();
-      console.log(data.info.pages, page);
-      if (data.info.pages === page) {
-        maxPages = true;
-      }
-      // return data;
-      page++;
-      data.results.forEach((character) => {
-        cardContainer.append(createCharacterCard(character));
-      });
-    } catch (error) {
-      return { error: error };
+async function fetchCharacters(indexPage) {
+  // let maxPages = false;
+  // while (!maxPages) {
+
+  try {
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character?page=${indexPage}`,
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Data! Status Code: ${response.status}`);
     }
+    const data = await response.json();
+    // console.log(data.info.pages, page);
+    // if (data.info.pages === page) {
+    //   maxPages = true;
+    // }
+    // return data;
+    // page++;
+    cardContainer.innerHTML = "";
+    data.results.forEach((character) => {
+      cardContainer.append(createCharacterCard(character));
+    });
+  } catch (error) {
+    return { error: error };
   }
+  // }
 }
-fetchCharacters();
+fetchCharacters(page);
 
 // async function handleFetchCharacters() {
 //   const result = await fetchCharacters();
