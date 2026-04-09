@@ -13,18 +13,19 @@ const pagination = document.querySelector('[data-js="pagination"]');
 // States
 let maxPage = 1;
 let page = 1;
-const searchQuery = "";
+let searchQuery = "";
 
 // Fetch API
 
-async function fetchCharacters(indexPage) {
+async function fetchCharacters() {
   // let maxPages = false;
   // while (!maxPages) {
 
   try {
     const response = await fetch(
-      `https://rickandmortyapi.com/api/character?page=${indexPage}`,
+      `https://rickandmortyapi.com/api/character?page=${page}&name=${searchQuery}`,
     );
+    console.log(response);
     if (!response.ok) {
       throw new Error(`Failed to fetch Data! Status Code: ${response.status}`);
     }
@@ -32,7 +33,7 @@ async function fetchCharacters(indexPage) {
 
     maxPage = data.info.pages;
 
-    pagination.innerHTML = `${indexPage} / ${maxPage}`;
+    pagination.innerHTML = `${page} / ${maxPage}`;
 
     // console.log(data.info.pages, page);
     // if (data.info.pages === page) {
@@ -44,13 +45,17 @@ async function fetchCharacters(indexPage) {
     data.results.forEach((character) => {
       cardContainer.append(createCharacterCard(character));
     });
+    navigation.style.visibility = "visible";
+    return data;
   } catch (error) {
     return { error: error };
   }
   // }
 }
-fetchCharacters(page);
+fetchCharacters();
 console.log(maxPage);
+
+// Buttons
 
 nextButton.addEventListener("click", () => {
   console.log(nextButton.style.display);
@@ -61,7 +66,7 @@ nextButton.addEventListener("click", () => {
     prevButton.style.visibility = "visible";
   }
   page++;
-  fetchCharacters(page);
+  fetchCharacters();
 });
 
 prevButton.addEventListener("click", () => {
@@ -74,18 +79,32 @@ prevButton.addEventListener("click", () => {
     nextButton.style.visibility = "visible";
   }
   page--;
-  fetchCharacters(page);
+  fetchCharacters();
 });
 
-// async function handleFetchCharacters() {
-//   const result = await fetchCharacters();
-//   if (result.error) {
-//     console.log("An error occurred:", result.error);
-//   }
-//   return result;
-//   // } else {
-//   //   // console.log("Fetched data:", result.results);
-//   // }
-// }
+async function handleFetchCharacters() {
+  const result = await fetchCharacters();
+  if (result?.error) {
+    console.log("An error occurred:", result.error);
+    cardContainer.innerHTML = "";
+    navigation.style.visibility = "hidden";
+  }
+  return result;
+  // } else {
+  //   // console.log("Fetched data:", result.results);
+  // }
+}
 
 // createCharacterCard();
+
+// Search Bar
+
+searchBar.addEventListener("input", (event) => {
+  searchQuery = event.target.value;
+  page = 1;
+  const result = handleFetchCharacters();
+  console.log(result);
+  // if (result) {
+  //   console.log(error);
+  // }
+});
