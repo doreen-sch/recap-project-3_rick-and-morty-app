@@ -5,3 +5,7 @@
 .button:hover {
   background-color: var(--color-secondary);
 }
+
+.button--prev {
+  visibility: hidden;
+}

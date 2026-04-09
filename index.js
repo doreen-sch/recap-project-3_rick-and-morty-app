@@ -32,6 +32,8 @@ async function fetchCharacters(indexPage) {
 
     maxPage = data.info.pages;
 
+    pagination.innerHTML = `${indexPage} / ${maxPage}`;
+
     // console.log(data.info.pages, page);
     // if (data.info.pages === page) {
     //   maxPages = true;
@@ -51,19 +53,25 @@ fetchCharacters(page);
 console.log(maxPage);
 
 nextButton.addEventListener("click", () => {
-  if (page === maxPage) {
-    alert("Hey, this is the End! :( Hold your breath and count to ten.");
-    console.log(page, maxPage);
-    return;
+  console.log(nextButton.style.display);
+  if (page === maxPage - 1) {
+    nextButton.style.visibility = "hidden";
+  }
+  if (page === 1) {
+    prevButton.style.visibility = "visible";
   }
   page++;
   fetchCharacters(page);
 });
 
 prevButton.addEventListener("click", () => {
-  if (page === 1) {
-    alert("You reached the start of the universe. :D");
-    return;
+  console.log(prevButton.style.display);
+
+  if (page === 2) {
+    prevButton.style.visibility = "hidden";
+  }
+  if (page === maxPage) {
+    nextButton.style.visibility = "visible";
   }
   page--;
   fetchCharacters(page);
