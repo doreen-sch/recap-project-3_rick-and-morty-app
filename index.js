@@ -1,20 +1,41 @@
 import { createCharacterCard } from "./components/CharacterCard/CharacterCard.js";
-import { NextButton } from "./components/NavButton/NavButton.js";
+import { NextButton, PrevButton } from "./components/NavButton/NavButton.js";
+import { Pagination } from "./components/NavPagination/NavPagination.js";
+import { SearchBar } from "./components/SearchBar/SearchBar.js";
 
 const cardContainer = document.querySelector('[data-js="card-container"]');
+// const searchBarContainer = document.querySelector(
+//   '[data-js="search-bar-container"]',
+// );
 const searchBarContainer = document.querySelector(
   '[data-js="search-bar-container"]',
 );
-const searchBar = document.querySelector('[data-js="search-bar"]');
 // const navigation = document.querySelector('[data-js="navigation"]');
 // const prevButton = document.querySelector('[data-js="button-prev"]');
 // const nextButton = document.querySelector('[data-js="button-next"]');
-const pagination = document.querySelector('[data-js="pagination"]');
+// const pagination = document.querySelector('[data-js="pagination"]');
 
 // States
 let maxPage = 1;
 let page = 1;
 let searchQuery = "";
+
+// Search Bar
+
+const searchBar = SearchBar({ onInput: handleSearchBarInput });
+// console.log(searchBar);
+searchBarContainer.append(searchBar);
+
+// searchBar.addEventListener("input", (event) => {
+function handleSearchBarInput(event) {
+  searchQuery = event.target.value;
+  page = 1;
+  const result = handleFetchCharacters();
+  console.log(result);
+  // if (result) {
+  //   console.log(error);
+  // }
+}
 
 // Fetch API
 
@@ -31,7 +52,7 @@ async function fetchCharacters() {
       throw new Error(`Failed to fetch Data! Status Code: ${response.status}`);
     }
     const data = await response.json();
-
+    // console.log(data);
     maxPage = data.info.pages;
 
     pagination.innerHTML = `${page} / ${maxPage}`;
@@ -46,7 +67,9 @@ async function fetchCharacters() {
     data.results.forEach((character) => {
       cardContainer.append(createCharacterCard(character));
     });
+    // console.log(cardContainer);
     navigation.style.visibility = "visible";
+    // console.log(navigation);
     return data;
   } catch (error) {
     return { error: error };
@@ -58,8 +81,15 @@ console.log(maxPage);
 
 // Buttons
 
-// const prevButton = PrevButton();
-const nextButton = NextButton({ onclick: handleNextButtonClick });
+const prevButton = PrevButton({ onClick: handlePrevButtonClick });
+const navigation = document.createElement("nav");
+const nextButton = NextButton({ onClick: handleNextButtonClick });
+const pagination = Pagination();
+navigation.append(prevButton);
+navigation.append(pagination);
+navigation.append(nextButton);
+navigation.classList.add("navigation");
+document.body.append(navigation);
 
 function handleNextButtonClick(event) {
   if (page === maxPage - 1) {
@@ -72,10 +102,16 @@ function handleNextButtonClick(event) {
   fetchCharacters();
 }
 
-const navigation = document.createElement("nav");
-navigation.classList.add("navigation");
-navigation.append(nextButton);
-cardContainer.append(navigation);
+function handlePrevButtonClick(event) {
+  if (page === 2) {
+    prevButton.style.visibility = "hidden";
+  }
+  if (page === maxPage) {
+    nextButton.style.visibility = "visible";
+  }
+  page--;
+  fetchCharacters();
+}
 
 // nextButton.addEventListener("click", () => {
 //   console.log(nextButton.style.display);
@@ -116,15 +152,3 @@ async function handleFetchCharacters() {
 }
 
 // createCharacterCard();
-
-// Search Bar
-
-searchBar.addEventListener("input", (event) => {
-  searchQuery = event.target.value;
-  page = 1;
-  const result = handleFetchCharacters();
-  console.log(result);
-  // if (result) {
-  //   console.log(error);
-  // }
-});
