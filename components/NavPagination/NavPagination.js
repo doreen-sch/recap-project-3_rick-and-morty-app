@@ -3,5 +3,3 @@ export function Pagination(props) {
   pagination.classList.add("navigation__pagination");
   return pagination;
 }
-
-//   <span class="navigation__pagination" data-js="pagination"></span>
