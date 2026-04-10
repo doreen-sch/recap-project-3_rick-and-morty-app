@@ -16,7 +16,8 @@
 }
 
 body {
-  font-family: var(--font-family);
+  /* font-family: var(--font-family); */
+  font-family: "WubbaLubbaDubDub", sans-serif;
   color: var(--color-primary);
   padding: 20px;
   background-color: #fff874;
@@ -30,4 +31,15 @@ main {
 
 .title {
   padding: 10px 0;
+  text-align: center;
+}
+
+/* @font-face {
+  font-family: "WubbaLubbaDubDub";
+  src: url("../fonts/WubbaLubbaDubDub.ttf") format("truetype");
+} */
+
+@font-face {
+  font-family: "get_schwifty";
+  src: url("../fonts/WubbaLubbaDubDub.ttf") format("truetype");
 }
